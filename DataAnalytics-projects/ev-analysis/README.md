@@ -1,4 +1,4 @@
-This project explores electric vehicle (EV) infrastructure and tries to locate a gap in Germany.  
+This project (ongoing) explores electric vehicle (EV) infrastructure and tries to locate a gap in Germany.  
 It uses publicly available data to analyse national and regional EV usage, charging networks, and growth patterns.
 
 ## 📦 What’s Inside
