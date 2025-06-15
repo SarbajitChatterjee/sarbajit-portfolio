@@ -2,7 +2,7 @@
 
 🎓 MBA in European Management & Entrepreneurship  
 💼 5+ years in QA Automation, Internal Tools, DevOps Support  
-🎯 Transitioning into Product Strategy & Digital Platforms  
+🎯 On a mission to bridge tech, data, and business through thoughtful product development — and sparring ideas over chai ☕️.
 
 ## 📂 Portfolio Overview
 
