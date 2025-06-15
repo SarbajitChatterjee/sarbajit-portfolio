@@ -1,5 +1,8 @@
 import pandas as pd
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 def qa_Check_NaNcells(df) :
     #QA on Data cleaning
     df_toCheck = df.isna().any().any()
@@ -11,6 +14,46 @@ def qa_Check_NaNcells(df) :
     else:
         return False
     
+
+def plot_state_trends(df_long):
+    # Plots EV registrations over time, one line per German state.
+    
+    # Parameters:
+    # df_long (pd.DataFrame): Long‐format DataFrame with columns
+    #     ['Region', 'State', 'Date', 'EVs']
+    
+    # Setting a clean, grid‐based style for readability
+    sns.set(style="whitegrid")
+    # Define the canvas size (in inches)
+    plt.figure(figsize=(14,8))
+
+    # Draw the line plot
+    sns.lineplot(
+        data = df_long,
+        x= "Date",
+        y= "EVs",
+        hue= "State", #separate colour for each line in different state
+        estimator= "sum",
+        errorbar=None #turns off the shading around lines.
+    )
+
+    # Titles and Names
+    plt.title("Trends of Charging Stations by State (DE)", fontsize=16)
+    plt.xlabel("per Quarter by Year", fontsize=14)
+    plt.ylabel("Charging Stations", fontsize=14)
+
+    # Legends
+    plt.legend(
+        title= "State",
+        bbox_to_anchor = (1.02,2),
+        loc = "upper right",
+        borderaxespad = 0
+    )
+
+    #Render and display
+    plt.tight_layout()
+    plt.show()
+
 
 
 # Step 1: Load CSV without headers at all
@@ -98,4 +141,8 @@ df_long.to_csv("cleaned_EV_charging_stations_germany.csv",index=False, encoding=
 
 #Now that the data is cleaned, help in plotting the data using a function that you can define it.
 #Should be trend graph, heatmap(with a scrollbar based on the year or dropdown box), geographical map with 2017 and 2025
-#Can find a new data that captures the per capita of people using EVs and then finding the proportion of EV chargers 50 kms. Point zero will be a city in  region and then go farther into rural region.
+#Can find a new data that captures the per capita of people using EVs and then finding the proportion of EV chargers 50 kms. Point zero will be a city in  region and then go farther into rural region. --. For each representation they should be ran through a method.
+
+
+# Plots EV registrations over time, one line per German state.
+plot_state_trends(df_long)
