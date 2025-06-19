@@ -18,4 +18,7 @@ Section	Description
 💼 Team Behind DiaTrack
 Abhishek Negi, Sarbajit Chatterjee, Amit Iragavarapu
 
+📄 Files in this Folder: 
+Entrepreneurship.pdf – Final graded project report for DiaTrack
+
 🧩 The founding team blends technical backgrounds (Computer Science) with consulting, policy, and business (MBA) experience — aligned to the T-shaped skill model with a roadmap for expert hiring in biomedical and regulatory fields.
