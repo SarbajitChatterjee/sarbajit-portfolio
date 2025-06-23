@@ -20,33 +20,56 @@ def plot_state_trends(df_long):
     
     # Parameters:
     # df_long (pd.DataFrame): Long‐format DataFrame with columns
-    #     ['Region', 'State', 'Date', 'EVs']
+    #     ['Region', 'State', 'Date', 'Stations']
     
     # Setting a clean, grid‐based style for readability
     sns.set(style="whitegrid")
     # Define the canvas size (in inches)
-    plt.figure(figsize=(14,8))
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    #    Reserve right 25% of figure for legend
+    #    left=0.0, right=1.0 spans entire width.
+    #    By moving right down to 0.75, axes fill 75% width.
+    fig.subplots_adjust(left=0.05, right=0.75, top=0.90, bottom=0.15)
+
+    # # Reserve margins exactly as shown by the sliders
+    # fig.subplots_adjust(
+    #     left=0.075,    # slider “left” = 0.075
+    #     bottom=0.17,   # slider “bottom” = 0.17
+    #     right=0.967,   # slider “right” = 0.967
+    #     top=0.566,     # slider “top” = 0.566
+    #     wspace=0.19,   # slider “wspace” = 0.19
+    #     hspace=0.27    # slider “hspace” = 0.27
+    # ) 
 
     # Draw the line plot
     sns.lineplot(
         data = df_long,
         x= "Date",
-        y= "EVs",
+        y= "Stations",
         hue= "State", #separate colour for each line in different state
         estimator= "sum",
+        ax=ax,
+        linewidth=2,
         errorbar=None #turns off the shading around lines.
     )
 
     # Titles and Names
-    plt.title("Trends of Charging Stations by State (DE)", fontsize=16)
-    plt.xlabel("per Quarter by Year", fontsize=14)
-    plt.ylabel("Charging Stations", fontsize=14)
+    # plt.title("Trends of Charging Stations by State (DE)", fontsize=16)
+    # plt.xlabel("per Quarter by Year", fontsize=14)
+    # plt.ylabel("Charging Stations", fontsize=14)
+
+    ax.set_title("Trends of Charging Stations by State (DE)", fontsize=16, pad=15)
+    ax.set_xlabel("per Quarter by Year", fontsize=14, labelpad=10)
+    ax.set_ylabel("Charging Stations", fontsize=14, labelpad=10)
 
     # Legends
-    plt.legend(
+    ax.legend(
         title= "State",
-        bbox_to_anchor = (1.02,2),
+        bbox_to_anchor = (1.02,2), #Just ooutside the axes
         loc = "upper right",
+        ncol=1,
+        frameon=True,
         borderaxespad = 0
     )
 
@@ -122,7 +145,7 @@ df_long = pd.melt(
     df_data,
     id_vars=["Region","State"],
     var_name="Date", #Original column names will go here
-    value_name="EVs" #basically chooses which value will go here with the var_name declared above
+    value_name="Stations" #basically chooses which value will go here with the var_name declared above
 
 )
 
@@ -132,7 +155,7 @@ df_long["Date"] = df_long["Date"].str.replace("_gesamt", "", regex=False)
 #Now converting that same column to dateTime format
 df_long["Date"] = pd.to_datetime(df_long["Date"], dayfirst=True, errors="coerce")
 #Final check to also have the new EV column in numeric or Int64
-df_long["EVs"] = pd.to_numeric(df_long["EVs"], errors="coerce")
+df_long["Stations"] = pd.to_numeric(df_long["Stations"], errors="coerce")
 
 print(df_long.tail(3))
 print(df_long.dtypes)
@@ -141,7 +164,7 @@ df_long.to_csv("cleaned_EV_charging_stations_germany.csv",index=False, encoding=
 
 #Now that the data is cleaned, help in plotting the data using a function that you can define it.
 #Should be trend graph, heatmap(with a scrollbar based on the year or dropdown box), geographical map with 2017 and 2025
-#Can find a new data that captures the per capita of people using EVs and then finding the proportion of EV chargers 50 kms. Point zero will be a city in  region and then go farther into rural region. --. For each representation they should be ran through a method.
+#Can find a new data that captures the per capita of people using Stations and then finding the proportion of EV chargers 50 kms. Point zero will be a city in  region and then go farther into rural region. --. For each representation they should be ran through a method.
 
 
 # Plots EV registrations over time, one line per German state.
