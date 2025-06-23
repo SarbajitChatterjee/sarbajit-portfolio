@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import geopandas as gpd
+
 def qa_Check_NaNcells(df) :
     #QA on Data cleaning
     df_toCheck = df.isna().any().any()
@@ -77,6 +79,31 @@ def plot_state_trends(df_long):
     plt.tight_layout()
     plt.show()
 
+def plot_country_heatmap(df_long, year, geojson_path, cmap="RdYlBu_r"):
+    """
+    Draws a choropleth map of Germany’s states, colored by total charging stations in `year`.
+
+    Parameters:
+    -----------
+    df_long : pd.DataFrame
+        Long-format DataFrame with columns ['Region','State','Date','Stations'].
+    year : int
+        The year to map (e.g., 2017 or 2025).
+    geojson_path : str
+        Path to a Germany-states GeoJSON file.
+    cmap : str, optional
+        A matplotlib colormap (red=high, blue=low). Defaults to "RdYlBu_r".
+    """
+    
+    gdf = gpd.read_file(geojson_path)
+
+    #Sum station counts per state for the specified year
+    df_year=(
+        df_long[df_long["Date"].dt.year == year]
+        .groupby("State")["Stations"]
+        .sum()
+        .reset_index()
+    )
 
 
 # Step 1: Load CSV without headers at all
