@@ -5,6 +5,8 @@ import seaborn as sns
 
 import geopandas as gpd
 
+geojson_path = "data/germany_states.geojson"
+
 def qa_Check_NaNcells(df) :
     #QA on Data cleaning
     df_toCheck = df.isna().any().any()
@@ -97,17 +99,35 @@ def plot_country_heatmap(df_long, year, geojson_path, cmap="RdYlBu_r"):
     
     gdf = gpd.read_file(geojson_path)
 
+    print(gdf)
+
     #Sum station counts per state for the specified year
-    df_year=(
-        df_long[df_long["Date"].dt.year == year]
-        .groupby("State")["Stations"]
-        .sum()
-        .reset_index()
+    df_year = (
+        df_long[df_long["Date"].dt.year == year]   # keep only rows from that year
+        .groupby("State")                          # group these rows by the State name
+        ["Stations"]                               # pick the Stations column
+        .sum()                                     # add up all station counts per group
+        .reset_index()                             # turn the result back into a normal DataFrame
+    )
+
+    #Merging Data into the map
+    """
+    # Merge the station counts into the GeoDataFrame
+    left_on: the column in gdf that names each state (e.g. "STATE_NAME")
+    right_on: the column in df_year that has the same state names ("State")
+    how="left": keep all states in the map, even if they had zero stations (Replicates what type of SQL Joins)
+    """
+
+    gdf = gdf.merge(
+        df_year,
+        left_on="STATE_NAME",
+        right_on="State",
+        how="left"
     )
 
 
 # Step 1: Load CSV without headers at all
-df_raw = pd.read_csv("Raw Data.csv", encoding="ISO-8859-1", header=None)
+df_raw = pd.read_csv("data/Raw Data.csv", encoding="ISO-8859-1", header=None)
 
 print(df_raw.head(3))
 
@@ -187,7 +207,7 @@ df_long["Stations"] = pd.to_numeric(df_long["Stations"], errors="coerce")
 print(df_long.tail(3))
 print(df_long.dtypes)
 
-df_long.to_csv("cleaned_EV_charging_stations_germany.csv",index=False, encoding="ISO-8859-1")
+df_long.to_csv("data/cleaned_EV_charging_stations_germany.csv",index=False, encoding="ISO-8859-1")
 
 #Now that the data is cleaned, help in plotting the data using a function that you can define it.
 #Should be trend graph, heatmap(with a scrollbar based on the year or dropdown box), geographical map with 2017 and 2025
@@ -195,4 +215,6 @@ df_long.to_csv("cleaned_EV_charging_stations_germany.csv",index=False, encoding=
 
 
 # Plots EV registrations over time, one line per German state.
-plot_state_trends(df_long)
+print("\n**********Commented | Trends of Chargings stations per year*********\n") #plot_state_trends(df_long)
+
+plot_country_heatmap(df_long, 2025, geojson_path)
